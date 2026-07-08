@@ -1,0 +1,23 @@
+# Compiled binary
+jctl
+jctl.exe
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Go build/test artifacts
+*.test
+*.out
+coverage.html
+
+# Environment / secrets
+.env
+*.env

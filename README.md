@@ -38,7 +38,7 @@ sudo mv jctl /usr/local/bin/
 jctl configure
 ```
 
-You can also set credentials via environment variables:
+You can also set credentials via environment variables (these override the config file):
 
 ```bash
 export JCTL_BASE_URL=https://yourorg.atlassian.net
@@ -77,24 +77,31 @@ Run `jctl completion` without flags for setup instructions tailored to your shel
 
 ### Create an issue
 
+New issues are assigned to you by default. Use `--assignee none` to leave unassigned, or pass an email/account ID to assign someone else.
+
 ```bash
 jctl issue create -p PROJ -s "Fix login bug" -t Bug --priority High
 jctl issue create -p PROJ -s "New feature" -d "Detailed description" -l backend -l urgent
-jctl issue create -p PROJ -s "Team task" --assignee none    # leave unassigned
+jctl issue create -p PROJ -s "Team task" --assignee none
+jctl issue create -p PROJ -s "For Alice" --assignee alice@example.com
 ```
 
 ### View an issue
 
 ```bash
 jctl issue view PROJ-123
+jctl issue view PROJ-123 -c              # include comments
+jctl issue view PROJ-123 -w              # open in browser
 ```
 
 ### Update an issue
 
 ```bash
 jctl issue update PROJ-123 -s "Updated summary"
+jctl issue update PROJ-123 -d "New description"
 jctl issue update PROJ-123 --priority High --assignee user@example.com
 jctl issue update PROJ-123 --assignee me
+jctl issue update PROJ-123 -l backend -l urgent
 jctl issue update PROJ-123 -c "Adding a comment"
 ```
 
@@ -102,27 +109,40 @@ jctl issue update PROJ-123 -c "Adding a comment"
 
 ```bash
 jctl issue list -p PROJ
-jctl issue list -p PROJ --status "In Progress" -a me    # 'me' refers to the current authenticated user
-jctl issue list --jql "project = PROJ AND priority = High" -n 50
+jctl issue list -p PROJ --status "In Progress" -a me
+jctl issue list -p PROJ -t Bug -n 50
+jctl issue list --jql "project = PROJ AND priority = High"
+jctl issue ls -p PROJ                         # alias for list
 ```
+
+`me` refers to the current authenticated user.
 
 ### Transition an issue
 
 ```bash
-jctl issue transition PROJ-123 --list              # see available transitions
-jctl issue transition PROJ-123 -s "In Progress"    # move to status
+jctl issue transition PROJ-123 --list
+jctl issue transition PROJ-123 -s "In Progress"
+jctl issue move PROJ-123 -s Done              # alias for transition
 ```
 
 ## Command Reference
 
-| Command                 | Description                           |
-| ----------------------- | ------------------------------------- |
-| `jctl configure`        | Set Jira URL, email, and API token    |
-| `jctl completion`       | Generate shell tab completion scripts |
-| `jctl issue create`     | Create a new issue                    |
-| `jctl issue view`       | View issue details                    |
-| `jctl issue update`     | Update issue fields or add a comment  |
-| `jctl issue list`       | Search/list issues (JQL or filters)   |
-| `jctl issue transition` | Move an issue to a new status         |
+| Command                          | Description                                     |
+| -------------------------------- | ----------------------------------------------- |
+| `jctl configure`                 | Set Jira URL, email, and API token              |
+| `jctl completion`                | Generate shell tab completion scripts           |
+| `jctl issue create`              | Create a new issue (assigned to you by default) |
+| `jctl issue view`                | View issue details                              |
+| `jctl issue update`              | Update issue fields or add a comment            |
+| `jctl issue list` (`ls`)         | Search/list issues (JQL or filters)             |
+| `jctl issue transition` (`move`) | Move an issue to a new status                   |
 
 Run `jctl --help` or `jctl issue --help` for full flag details.
+
+## Development
+
+```bash
+make test      # run tests
+make build     # compile binary
+make lint      # go vet + staticcheck
+```

@@ -80,6 +80,7 @@ Run `jctl completion` without flags for setup instructions tailored to your shel
 ```bash
 jctl issue create -p PROJ -s "Fix login bug" -t Bug --priority High
 jctl issue create -p PROJ -s "New feature" -d "Detailed description" -l backend -l urgent
+jctl issue create -p PROJ -s "Team task" --assignee none    # leave unassigned
 ```
 
 ### View an issue
@@ -93,6 +94,7 @@ jctl issue view PROJ-123
 ```bash
 jctl issue update PROJ-123 -s "Updated summary"
 jctl issue update PROJ-123 --priority High --assignee user@example.com
+jctl issue update PROJ-123 --assignee me
 jctl issue update PROJ-123 -c "Adding a comment"
 ```
 

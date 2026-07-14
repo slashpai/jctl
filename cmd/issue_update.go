@@ -12,7 +12,7 @@ type UpdateCmd struct {
 	Summary     *string  `short:"s" help:"New summary."`
 	Description *string  `short:"d" help:"New description."`
 	Priority    *string  `help:"New priority."`
-	Assignee    *string  `help:"New assignee (email or account ID)."`
+	Assignee    *string  `help:"New assignee (email, account ID, or 'me' for yourself)."`
 	Label       []string `short:"l" help:"Replace labels."`
 	Component   []string `help:"Replace components."`
 	Comment     string   `short:"c" help:"Add a comment."`

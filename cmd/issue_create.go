@@ -13,7 +13,7 @@ type CreateCmd struct {
 	Description string   `short:"d" help:"Issue description."`
 	Type        string   `short:"t" default:"Task" help:"Issue type (e.g. Bug, Story, Task)."`
 	Priority    string   `help:"Priority (e.g. High, Medium, Low)."`
-	Assignee    string   `help:"Assignee (email or account ID)."`
+	Assignee    string   `default:"me" help:"Assignee (defaults to 'me'; use 'none' to leave unassigned, or an email/account ID)."`
 	Label       []string `short:"l" help:"Labels (can be repeated)."`
 	Component   []string `help:"Components (can be repeated)."`
 }
@@ -25,7 +25,12 @@ func (c *CreateCmd) Run() error {
 	}
 
 	assignee := c.Assignee
-	if assignee != "" {
+	if assignee == "" {
+		assignee = "me"
+	}
+	if assignee == "none" {
+		assignee = ""
+	} else {
 		assignee, err = client.ResolveAssignee(assignee)
 		if err != nil {
 			return fmt.Errorf("resolving assignee: %w", err)

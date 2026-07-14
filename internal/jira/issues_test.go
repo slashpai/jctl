@@ -532,6 +532,24 @@ func TestResolveAssignee(t *testing.T) {
 			t.Errorf("expected abc123, got %s", id)
 		}
 	})
+
+	t.Run("me resolves current user", func(t *testing.T) {
+		client, srv := testClient(func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path != "/rest/api/3/myself" {
+				t.Fatalf("unexpected path: %s", r.URL.Path)
+			}
+			json.NewEncoder(w).Encode(User{AccountID: "current-user-id", DisplayName: "Alice"})
+		})
+		defer srv.Close()
+
+		id, err := client.ResolveAssignee("me")
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if id != "current-user-id" {
+			t.Errorf("expected current-user-id, got %s", id)
+		}
+	})
 }
 
 func assertBasicAuth(t *testing.T, r *http.Request, expectedUser, expectedPass string) {

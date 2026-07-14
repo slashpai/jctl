@@ -310,13 +310,36 @@ func (c *Client) FindUser(email string) (string, error) {
 	return users[0].AccountID, nil
 }
 
-// ResolveAssignee accepts an email or account ID and returns the account ID.
+// ResolveAssignee accepts an email, account ID, or "me" and returns the account ID.
 // If the value contains '@' it is treated as an email and looked up.
 func (c *Client) ResolveAssignee(value string) (string, error) {
+	if value == "me" {
+		return c.CurrentUserAccountID()
+	}
 	if strings.Contains(value, "@") {
 		return c.FindUser(value)
 	}
 	return value, nil
+}
+
+// CurrentUserAccountID returns the account ID of the authenticated user.
+func (c *Client) CurrentUserAccountID() (string, error) {
+	resp, status, err := c.do("GET", "myself", nil)
+	if err != nil {
+		return "", err
+	}
+	if status < 200 || status >= 300 {
+		return "", parseError(resp, status)
+	}
+
+	var user User
+	if err := json.Unmarshal(resp, &user); err != nil {
+		return "", fmt.Errorf("parsing response: %w", err)
+	}
+	if user.AccountID == "" {
+		return "", fmt.Errorf("could not determine current user account ID")
+	}
+	return user.AccountID, nil
 }
 
 // adfText wraps plain text in Atlassian Document Format (required by API v3).

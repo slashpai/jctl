@@ -10,8 +10,9 @@ import (
 
 // CLI defines the top-level command structure for jctl.
 type CLI struct {
-	Configure ConfigureCmd `cmd:"" help:"Set up Jira connection credentials."`
-	Issue     IssueCmd     `cmd:"" help:"Manage Jira issues."`
+	Configure  ConfigureCmd  `cmd:"" help:"Set up Jira connection credentials."`
+	Issue      IssueCmd      `cmd:"" help:"Manage Jira issues."`
+	Completion CompletionCmd `cmd:"" help:"Generate shell tab completion scripts."`
 }
 
 // IssueCmd groups all issue subcommands.

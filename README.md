@@ -29,8 +29,6 @@ make build
 sudo mv jctl /usr/local/bin/
 ```
 
-
-
 ## Setup
 
 1. Generate a Jira API token at [https://id.atlassian.com/manage-profile/security/api-tokens](https://id.atlassian.com/manage-profile/security/api-tokens)
@@ -48,11 +46,34 @@ export JCTL_EMAIL=you@example.com
 export JCTL_TOKEN=your-api-token
 ```
 
+## Shell completion
 
+jctl supports tab completion for commands, subcommands, and flags in bash, zsh, and fish. Ensure `jctl` is on your `$PATH` (not invoked as `./jctl`).
+
+**Current session** — pick your shell:
+
+```bash
+# Bash
+source <(jctl completion -c bash)
+
+# Zsh
+source <(jctl completion -c zsh)
+
+# Fish
+jctl completion -c fish | source
+```
+
+**Permanent setup** — add the same command to your shell init file:
+
+| Shell | Init file                      |
+| ----- | ------------------------------ |
+| Bash  | `~/.bashrc`                    |
+| Zsh   | `~/.zshrc`                     |
+| Fish  | `~/.config/fish/config.fish`   |
+
+Run `jctl completion` without flags for setup instructions tailored to your shell.
 
 ## Usage
-
-
 
 ### Create an issue
 
@@ -61,15 +82,11 @@ jctl issue create -p PROJ -s "Fix login bug" -t Bug --priority High
 jctl issue create -p PROJ -s "New feature" -d "Detailed description" -l backend -l urgent
 ```
 
-
-
 ### View an issue
 
 ```bash
 jctl issue view PROJ-123
 ```
-
-
 
 ### Update an issue
 
@@ -79,8 +96,6 @@ jctl issue update PROJ-123 --priority High --assignee user@example.com
 jctl issue update PROJ-123 -c "Adding a comment"
 ```
 
-
-
 ### List issues
 
 ```bash
@@ -89,8 +104,6 @@ jctl issue list -p PROJ --status "In Progress" -a me    # 'me' refers to the cur
 jctl issue list --jql "project = PROJ AND priority = High" -n 50
 ```
 
-
-
 ### Transition an issue
 
 ```bash
@@ -98,19 +111,16 @@ jctl issue transition PROJ-123 --list              # see available transitions
 jctl issue transition PROJ-123 -s "In Progress"    # move to status
 ```
 
-
-
 ## Command Reference
 
-
-| Command                 | Description                          |
-| ----------------------- | ------------------------------------ |
-| `jctl configure`        | Set Jira URL, email, and API token   |
-| `jctl issue create`     | Create a new issue                   |
-| `jctl issue view`       | View issue details                   |
-| `jctl issue update`     | Update issue fields or add a comment |
-| `jctl issue list`       | Search/list issues (JQL or filters)  |
-| `jctl issue transition` | Move an issue to a new status        |
-
+| Command                 | Description                           |
+| ----------------------- | ------------------------------------- |
+| `jctl configure`        | Set Jira URL, email, and API token    |
+| `jctl completion`       | Generate shell tab completion scripts |
+| `jctl issue create`     | Create a new issue                    |
+| `jctl issue view`       | View issue details                    |
+| `jctl issue update`     | Update issue fields or add a comment  |
+| `jctl issue list`       | Search/list issues (JQL or filters)   |
+| `jctl issue transition` | Move an issue to a new status         |
 
 Run `jctl --help` or `jctl issue --help` for full flag details.

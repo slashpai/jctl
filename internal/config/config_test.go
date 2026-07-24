@@ -8,9 +8,7 @@ import (
 
 func TestSaveAndLoad(t *testing.T) {
 	tmpDir := t.TempDir()
-	origHome := os.Getenv("HOME")
 	t.Setenv("HOME", tmpDir)
-	defer os.Setenv("HOME", origHome)
 
 	cfg := &Config{
 		BaseURL: "https://test.atlassian.net",
@@ -31,7 +29,7 @@ func TestSaveAndLoad(t *testing.T) {
 		t.Errorf("expected file permissions 0600, got %o", info.Mode().Perm())
 	}
 
-	loaded, err := Load()
+	loaded, err := Load(WithEnv(false))
 	if err != nil {
 		t.Fatalf("Load() error: %v", err)
 	}
@@ -50,7 +48,7 @@ func TestLoad_NotFound(t *testing.T) {
 	tmpDir := t.TempDir()
 	t.Setenv("HOME", tmpDir)
 
-	_, err := Load()
+	_, err := Load(WithEnv(false))
 	if err == nil {
 		t.Fatal("expected error when config file missing")
 	}
@@ -67,7 +65,7 @@ func TestLoad_IncompleteConfig(t *testing.T) {
 	os.MkdirAll(dir, 0o700)
 	os.WriteFile(filepath.Join(dir, "config.yaml"), []byte("base_url: https://test.atlassian.net\n"), 0o600)
 
-	_, err := Load()
+	_, err := Load(WithEnv(false))
 	if err == nil {
 		t.Fatal("expected error for incomplete config")
 	}
@@ -85,7 +83,7 @@ func TestLoad_RejectsHTTP(t *testing.T) {
 	data := "base_url: http://insecure.example.com\nemail: a@b.com\ntoken: tok\n"
 	os.WriteFile(filepath.Join(dir, "config.yaml"), []byte(data), 0o600)
 
-	_, err := Load()
+	_, err := Load(WithEnv(false))
 	if err == nil {
 		t.Fatal("expected error for HTTP base_url")
 	}

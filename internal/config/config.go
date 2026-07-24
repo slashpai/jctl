@@ -31,7 +31,27 @@ func ConfigFilePath() (string, error) {
 	return filepath.Join(dir, "config.yaml"), nil
 }
 
-func Load() (*Config, error) {
+// LoadOption configures the behavior of Load.
+type LoadOption func(*loadOptions)
+
+type loadOptions struct {
+	useEnv bool
+}
+
+// WithEnv controls whether environment variables override config file values.
+// Defaults to true.
+func WithEnv(enabled bool) LoadOption {
+	return func(o *loadOptions) {
+		o.useEnv = enabled
+	}
+}
+
+func Load(opts ...LoadOption) (*Config, error) {
+	o := &loadOptions{useEnv: true}
+	for _, opt := range opts {
+		opt(o)
+	}
+
 	path, err := ConfigFilePath()
 	if err != nil {
 		return nil, fmt.Errorf("finding config directory: %w", err)
@@ -50,14 +70,16 @@ func Load() (*Config, error) {
 		return nil, fmt.Errorf("parsing config: %w", err)
 	}
 
-	if v := os.Getenv("JCTL_BASE_URL"); v != "" {
-		cfg.BaseURL = v
-	}
-	if v := os.Getenv("JCTL_EMAIL"); v != "" {
-		cfg.Email = v
-	}
-	if v := os.Getenv("JCTL_TOKEN"); v != "" {
-		cfg.Token = v
+	if o.useEnv {
+		if v := os.Getenv("JCTL_BASE_URL"); v != "" {
+			cfg.BaseURL = v
+		}
+		if v := os.Getenv("JCTL_EMAIL"); v != "" {
+			cfg.Email = v
+		}
+		if v := os.Getenv("JCTL_TOKEN"); v != "" {
+			cfg.Token = v
+		}
 	}
 
 	if cfg.BaseURL == "" || cfg.Email == "" || cfg.Token == "" {

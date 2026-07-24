@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/alecthomas/kong"
 	"github.com/fatih/color"
 	"github.com/slashpai/jctl/internal/config"
 	"github.com/slashpai/jctl/internal/jira"
@@ -10,9 +11,10 @@ import (
 
 // CLI defines the top-level command structure for jctl.
 type CLI struct {
-	Configure  ConfigureCmd  `cmd:"" help:"Set up Jira connection credentials."`
-	Issue      IssueCmd      `cmd:"" help:"Manage Jira issues."`
-	Completion CompletionCmd `cmd:"" help:"Generate shell tab completion scripts."`
+	Version    kong.VersionFlag `short:"v" help:"Print version and quit."`
+	Configure  ConfigureCmd     `cmd:"" help:"Set up Jira connection credentials."`
+	Issue      IssueCmd         `cmd:"" help:"Manage Jira issues."`
+	Completion CompletionCmd    `cmd:"" help:"Generate shell tab completion scripts."`
 }
 
 // IssueCmd groups all issue subcommands.

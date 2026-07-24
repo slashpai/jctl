@@ -6,6 +6,7 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/slashpai/jctl/cmd"
 	"github.com/slashpai/jctl/internal/completion"
+	"github.com/slashpai/jctl/internal/version"
 )
 
 func main() {
@@ -14,6 +15,7 @@ func main() {
 		kong.Name("jctl"),
 		kong.Description("A CLI for managing Jira issues.\n\nGet started:\n  jctl configure            Set your Jira URL, email, and API token\n  jctl issue create          Create a new issue\n  jctl issue view KEY-123    View issue details\n  jctl issue list -p PROJ    List issues in a project"),
 		kong.UsageOnError(),
+		kong.Vars{"version": version.String()},
 	)
 	if err != nil {
 		panic(err)

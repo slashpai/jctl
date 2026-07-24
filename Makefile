@@ -1,16 +1,19 @@
-BINARY   := jctl
-MODULE   := github.com/slashpai/jctl
-GOFILES  := $(shell find . -name '*.go' -not -path './vendor/*')
+BINARY      := jctl
+MODULE      := github.com/slashpai/jctl
+GOFILES     := $(shell find . -name '*.go' -not -path './vendor/*')
+GIT_VERSION := $(shell git describe --tags --exact-match 2>/dev/null)
+GIT_COMMIT  := $(shell git rev-parse --short HEAD 2>/dev/null)
+LDFLAGS     := -X $(MODULE)/internal/version.version=$(GIT_VERSION) -X $(MODULE)/internal/version.commit=$(GIT_COMMIT)
 
 .PHONY: build install clean test lint fmt vet tidy update run help
 
 ## build: compile the binary
 build:
-	go build -o $(BINARY) .
+	go build -ldflags "$(LDFLAGS)" -o $(BINARY) .
 
 ## install: install to $GOPATH/bin
 install:
-	go install .
+	go install -ldflags "$(LDFLAGS)" .
 
 ## clean: remove build artifacts
 clean:

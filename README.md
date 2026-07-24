@@ -130,6 +130,7 @@ jctl issue move PROJ-123 -s Done              # alias for transition
 | Command                          | Description                                     |
 | -------------------------------- | ----------------------------------------------- |
 | `jctl configure`                 | Set Jira URL, email, and API token              |
+| `jctl --version` / `-v`          | Print version (tag or git commit)               |
 | `jctl completion`                | Generate shell tab completion scripts           |
 | `jctl issue create`              | Create a new issue (assigned to you by default) |
 | `jctl issue view`                | View issue details                              |
